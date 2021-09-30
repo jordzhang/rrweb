@@ -287,7 +287,7 @@ function record<T = eventWithTime>(
       }),
     );
 
-    const observe = (doc: Document) => {
+    const observe = (win: Window, doc: Document) => {
       return initObservers(
         {
           mutationCb: wrappedMutationEmit,
@@ -392,6 +392,7 @@ function record<T = eventWithTime>(
           recordCanvas,
           userTriggeredOnInput,
           collectFonts,
+          win,
           doc,
           maskInputFn,
           maskTextFn,
@@ -421,12 +422,12 @@ function record<T = eventWithTime>(
     };
 
     iframeManager.addLoadListener((iframeEl) => {
-      handlers.push(observe(iframeEl.contentDocument!));
+      handlers.push(observe(iframeEl.contentWindow!, iframeEl.contentDocument!));
     });
 
     const init = () => {
       takeFullSnapshot();
-      handlers.push(observe(document));
+      handlers.push(observe(window, document));
     };
     if (
       document.readyState === 'interactive' ||

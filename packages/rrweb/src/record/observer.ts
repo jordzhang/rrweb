@@ -702,6 +702,8 @@ function initMediaInteractionObserver(
 
 function initCanvasMutationObserver(
   cb: canvasMutationCallback,
+  win: Window,
+  doc: Document,
   blockClass: blockClass,
   mirror: Mirror,
 ): listenerHandler {
@@ -717,7 +719,7 @@ function initCanvasMutationObserver(
         continue;
       }
       const restoreHandler = patch(
-        CanvasRenderingContext2D.prototype,
+        (win as any).CanvasRenderingContext2D.prototype,
         prop,
         function (original) {
           return function (
@@ -758,7 +760,7 @@ function initCanvasMutationObserver(
       handlers.push(restoreHandler);
     } catch {
       const hookHandler = hookSetter<CanvasRenderingContext2D>(
-        CanvasRenderingContext2D.prototype,
+        (win as any).CanvasRenderingContext2D.prototype,
         prop,
         {
           set(v) {
@@ -980,7 +982,7 @@ export function initObservers(
     o.mirror,
   );
   const canvasMutationObserver = o.recordCanvas
-    ? initCanvasMutationObserver(o.canvasMutationCb, o.blockClass, o.mirror)
+    ? initCanvasMutationObserver(o.canvasMutationCb, o.win, o.doc, o.blockClass, o.mirror)
     : () => {};
   const fontObserver = o.collectFonts ? initFontObserver(o.fontCb) : () => {};
   // plugins

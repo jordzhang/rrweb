@@ -258,6 +258,7 @@ export type observerParam = {
   userTriggeredOnInput: boolean;
   collectFonts: boolean;
   slimDOMOptions: SlimDOMOptions;
+  win: Window,
   doc: Document;
   mirror: Mirror;
   iframeManager: IframeManager;
